@@ -83,27 +83,27 @@ MediaType.PROBLEM_JSON; // "application/problem+json"
 
 ## Custom message codes
 
-Register host-specific codes once at startup. The registry is global; duplicate codes throw unless you opt into overriding.
+Build a frozen, typo-checked table for host-specific codes with `defineMessageCodes`. Builtins are merged in and never mutated.
 
 ```ts
 import {
-	MessageCode,
-	messageCodeInfo,
-	registerMessageCodes,
+	defineMessageCodes,
+	lookupMessageCode,
 } from "@lst97-oss/last-httprism";
 
-registerMessageCodes({
+const AppCode = defineMessageCodes({
 	QUOTA_EXCEEDED: {
 		status: 429,
 		message: "The workspace quota has been exhausted.",
 	},
 });
 
-MessageCode.QUOTA_EXCEEDED; // { code: "QUOTA_EXCEEDED", status: 429, message: "..." }
-messageCodeInfo("QUOTA_EXCEEDED"); // same record
+AppCode.QUOTA_EXCEEDED.code; // "QUOTA_EXCEEDED" — literal, typo-checked
+AppCode.NOT_FOUND.code; // builtins are merged in
+lookupMessageCode(AppCode, name); // MessageCodeInfo | undefined
 ```
 
-`registerMessageCodes({ ... }, { override: true })` replaces existing definitions.
+Pass an object literal (or `as const`) so keys stay literal; passing a widened `MessageCodeDefinitions` variable gives a string-indexed table. A definition that shadows a builtin throws unless you pass `{ override: true }`.
 
 ## Vendor status codes
 
