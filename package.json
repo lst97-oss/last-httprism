@@ -1,0 +1,72 @@
+{
+	"name": "last-httprism",
+	"version": "0.1.0",
+	"description": "Typed, zero-dependency HTTP status, header, method, media type, and message code lookups with isolated vendor extensions.",
+	"keywords": [
+		"cloudflare",
+		"error",
+		"http",
+		"http-header",
+		"http-method",
+		"http-status",
+		"media-type",
+		"mime",
+		"nginx",
+		"status"
+	],
+	"license": "MIT",
+	"files": [
+		"dist"
+	],
+	"type": "module",
+	"sideEffects": false,
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./cloudflare": {
+			"types": "./dist/vendor/cloudflare.d.ts",
+			"default": "./dist/cloudflare.js"
+		},
+		"./nginx": {
+			"types": "./dist/vendor/nginx.d.ts",
+			"default": "./dist/nginx.js"
+		},
+		"./aws": {
+			"types": "./dist/vendor/aws.d.ts",
+			"default": "./dist/aws.js"
+		},
+		"./iis": {
+			"types": "./dist/vendor/iis.d.ts",
+			"default": "./dist/iis.js"
+		},
+		"./unofficial": {
+			"types": "./dist/vendor/unofficial.d.ts",
+			"default": "./dist/unofficial.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"scripts": {
+		"build": "tsup && tsc -p tsconfig.build.json --emitDeclarationOnly",
+		"test": "bun test",
+		"typecheck": "bun check --no-script",
+		"format": "bun fmt",
+		"format:check": "bun fmt --check",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint --write .",
+		"check": "bun run format:check && bun run lint && bun run typecheck && bun run test && bun run build"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.6.3",
+		"@types/bun": "^1.4.4",
+		"@types/node": "^26.6.5",
+		"tsup": "^9.0.0",
+		"typescript": "^7.0.2"
+	},
+	"engines": {
+		"node": ">=20.19.0"
+	},
+	"packageManager": "bun@1.4.4"
+}

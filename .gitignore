@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Test output
+coverage/
+
+# Packaging
+*.tgz
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+bun-error.log
+
+# Environment (bun loads .env automatically)
+.env
+.env.*
+!.env.example
+
+# Tooling caches
+.cache/
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+._*
+Thumbs.db
+
+# Logs
+*.log

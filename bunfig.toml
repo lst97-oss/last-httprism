@@ -1,0 +1,5 @@
+[fmt]
+useTabs = true
+printWidth = 80
+sortImports = true
+sortPackageJson = true
