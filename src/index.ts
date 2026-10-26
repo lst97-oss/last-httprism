@@ -21,12 +21,13 @@ export {
 export { canonicalHeaderName, HttpHeader } from "./http/headers.js";
 export { MediaType } from "./http/media-types.js";
 export {
+	defineMessageCodes,
+	lookupMessageCode,
 	MessageCode,
 	type MessageCodeDefinition,
 	type MessageCodeDefinitions,
 	type MessageCodeInfo,
-	messageCodeInfo,
-	registerMessageCodes,
+	type MessageCodeTable,
 } from "./http/message-codes.js";
 export {
 	HttpMethod,

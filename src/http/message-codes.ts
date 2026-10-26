@@ -14,7 +14,7 @@ export type MessageCodeDefinition = {
 	readonly message: string;
 };
 
-/** Map of code name to definition, as accepted by {@link registerMessageCodes}. */
+/** Map of code name to definition, as accepted by {@link defineMessageCodes}. */
 export type MessageCodeDefinitions = Record<string, MessageCodeDefinition>;
 
 // Generic machine-readable codes a host can pair with any status.
@@ -109,7 +109,7 @@ const BUILTIN = {
 	},
 } as const satisfies MessageCodeDefinitions;
 
-type BuiltinMessageCode = keyof typeof BUILTIN;
+type BuiltinCode = keyof typeof BUILTIN;
 
 function toInfo(
 	code: string,
@@ -127,71 +127,88 @@ const builtins = Object.fromEntries(
 		code,
 		toInfo(code, definition),
 	]),
-) as { [K in BuiltinMessageCode]: MessageCodeInfo };
+) as { [K in BuiltinCode]: MessageCodeInfo };
 
 /**
- * The 22 builtin message codes plus everything added through
- * {@link registerMessageCodes}.
- *
- * Builtin keys are literal-typed, so `MessageCode.ORIGIN_NOT_ALLOWED` is
- * checked at compile time; host codes are reachable through the string index.
- *
- * @example
- * MessageCode.ORIGIN_NOT_ALLOWED;
- * // { code: "ORIGIN_NOT_ALLOWED", status: 403, message: "The request origin is not allowed." }
+ * A frozen message-code table. Builtin keys are always present; keys added
+ * through {@link defineMessageCodes} are merged in as literals.
  */
-export const MessageCode = builtins as typeof builtins &
-	Record<string, MessageCodeInfo>;
-
-const registry = new Map<string, MessageCodeInfo>(Object.entries(builtins));
+export type MessageCodeTable<
+	D extends MessageCodeDefinitions = Record<never, never>,
+> = {
+	readonly [K in BuiltinCode | (keyof D & string)]: MessageCodeInfo &
+		Readonly<{ code: K }>;
+};
 
 /**
- * Registers host-specific message codes in the shared global registry.
+ * The 22 builtin message codes, keyed by literal name.
  *
- * Definitions are frozen and immediately visible through {@link MessageCode}
- * and {@link messageCodeInfo}. Register once at application startup.
- *
- * @param codes - Code name to `{ status, message }` definitions.
- * @param options.override - Replace existing definitions instead of throwing.
- * @throws Error when a code is already registered and `override` is not `true`.
+ * Frozen. Host-specific codes are built with {@link defineMessageCodes} into
+ * their own table; nothing mutates this object.
  *
  * @example
- * registerMessageCodes({
+ * MessageCode.ORIGIN_NOT_ALLOWED.code; // "ORIGIN_NOT_ALLOWED"
+ * MessageCode.ORIGIN_NOT_ALLOWED.status; // 403
+ */
+export const MessageCode: MessageCodeTable = Object.freeze(
+	builtins,
+) as MessageCodeTable;
+
+/**
+ * Builds a frozen message-code table from host definitions, merged over the
+ * builtins.
+ *
+ * Pass an object literal (or `as const`) so the returned table keeps literal
+ * keys; passing a pre-widened `MessageCodeDefinitions` variable degrades it to
+ * a string index. Duplicate builtin names throw unless `override` is `true`.
+ *
+ * @param definitions - Code name to `{ status, message }` definitions.
+ * @param options.override - Replace builtin definitions instead of throwing.
+ * @returns A frozen table containing the builtins and the host codes.
+ * @throws Error when a name is already builtin and `override` is not `true`.
+ *
+ * @example
+ * const AppCode = defineMessageCodes({
  *   QUOTA_EXCEEDED: {
  *     status: 429,
  *     message: "The workspace quota has been exhausted.",
  *   },
  * });
- *
- * MessageCode.QUOTA_EXCEEDED.status; // 429
+ * AppCode.QUOTA_EXCEEDED.code; // "QUOTA_EXCEEDED"
  */
-export function registerMessageCodes(
-	codes: MessageCodeDefinitions,
+export function defineMessageCodes<const D extends MessageCodeDefinitions>(
+	definitions: D,
 	options: { override?: boolean } = {},
-): void {
-	for (const code of Object.keys(codes)) {
-		if (registry.has(code) && options.override !== true) {
+): MessageCodeTable<D> {
+	for (const code of Object.keys(definitions)) {
+		if (Object.hasOwn(builtins, code) && options.override !== true) {
 			throw new Error(
 				`@lst97-oss/last-httprism: message code "${code}" is already registered`,
 			);
 		}
 	}
-	for (const [code, definition] of Object.entries(codes)) {
-		const info = toInfo(code, definition);
-		registry.set(code, info);
-		MessageCode[code] = info;
-	}
+	const host = Object.fromEntries(
+		Object.entries(definitions).map(([code, definition]) => [
+			code,
+			toInfo(code, definition),
+		]),
+	);
+	return Object.freeze({ ...builtins, ...host }) as MessageCodeTable<D>;
 }
 
 /**
- * Looks up a message code by name.
+ * Looks up a message code in a table by name.
  *
- * @param code - Code name, e.g. `"NOT_FOUND"`.
- * @returns The record, or `undefined` when it is neither builtin nor registered.
+ * @param table - A table from {@link MessageCode} or {@link defineMessageCodes}.
+ * @param code - Runtime code name, e.g. `"ORIGIN_NOT_ALLOWED"`.
+ * @returns The record, or `undefined` when the table has no own entry for it.
  *
  * @example
- * messageCodeInfo("ORIGIN_NOT_ALLOWED")?.status; // 403
+ * lookupMessageCode(AppCode, "QUOTA_EXCEEDED")?.status; // 429
+ * lookupMessageCode(AppCode, "toString"); // undefined
  */
-export function messageCodeInfo(code: string): MessageCodeInfo | undefined {
-	return registry.get(code);
+export function lookupMessageCode<
+	T extends Readonly<Record<string, MessageCodeInfo>>,
+>(table: T, code: string): T[keyof T] | undefined {
+	return Object.hasOwn(table, code) ? table[code as keyof T] : undefined;
 }
