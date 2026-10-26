@@ -61,6 +61,7 @@
 	},
 	"scripts": {
 		"build": "tsup && tsc -p tsconfig.build.json --emitDeclarationOnly",
+		"prepack": "bun run build",
 		"test": "bun test",
 		"typecheck": "bun check --no-script",
 		"format": "bun fmt",
