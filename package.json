@@ -1,6 +1,6 @@
 {
 	"name": "@lst97-oss/last-httprism",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Typed, zero-dependency HTTP status, header, method, media type, and message code lookups with isolated vendor extensions.",
 	"keywords": [
 		"cloudflare",
