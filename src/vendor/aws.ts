@@ -47,7 +47,7 @@ const statuses = defineProviderStatuses(AWS, entries);
  * AWS Application Load Balancer responses that are not standard HTTP codes:
  * 460, 463, 464, 561, and 562.
  *
- * Exported only from `last-httprism/aws`.
+ * Exported only from `@lst97-oss/last-httprism/aws`.
  *
  * @see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-troubleshooting.html
  *

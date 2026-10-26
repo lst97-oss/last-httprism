@@ -1,5 +1,5 @@
 {
-	"name": "last-httprism",
+	"name": "@lst97-oss/last-httprism",
 	"version": "0.1.0",
 	"description": "Typed, zero-dependency HTTP status, header, method, media type, and message code lookups with isolated vendor extensions.",
 	"keywords": [
@@ -14,7 +14,15 @@
 		"nginx",
 		"status"
 	],
+	"homepage": "https://github.com/lst97-oss/last-httprism#readme",
+	"bugs": {
+		"url": "https://github.com/lst97-oss/last-httprism/issues"
+	},
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lst97-oss/last-httprism.git"
+	},
 	"files": [
 		"dist"
 	],
@@ -47,6 +55,9 @@
 			"default": "./dist/unofficial.js"
 		},
 		"./package.json": "./package.json"
+	},
+	"publishConfig": {
+		"access": "public"
 	},
 	"scripts": {
 		"build": "tsup && tsc -p tsconfig.build.json --emitDeclarationOnly",

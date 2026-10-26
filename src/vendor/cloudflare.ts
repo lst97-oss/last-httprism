@@ -70,7 +70,7 @@ const statuses = defineProviderStatuses(CLOUDFLARE, entries);
 /**
  * Cloudflare reverse-proxy status codes: 520–526, 530, and historical 527.
  *
- * Exported only from `last-httprism/cloudflare`; these codes never resolve from
+ * Exported only from `@lst97-oss/last-httprism/cloudflare`; these codes never resolve from
  * the standard lookup.
  *
  * @see https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/

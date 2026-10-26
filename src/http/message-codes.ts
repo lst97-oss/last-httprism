@@ -172,7 +172,7 @@ export function registerMessageCodes(
 	for (const code of Object.keys(codes)) {
 		if (registry.has(code) && options.override !== true) {
 			throw new Error(
-				`last-httprism: message code "${code}" is already registered`,
+				`@lst97-oss/last-httprism: message code "${code}" is already registered`,
 			);
 		}
 	}

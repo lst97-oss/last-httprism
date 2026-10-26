@@ -1,12 +1,12 @@
-# last-httprism
+# @lst97-oss/last-httprism
 
 Typed, zero-dependency lookups for HTTP status codes, headers, methods, media types, and machine-readable message codes. Vendor status codes (Cloudflare, Nginx) ship as isolated subpath exports and never mix with the standard registry.
 
 ## Install
 
 ```sh
-bun add last-httprism
-# npm install last-httprism / pnpm add last-httprism
+bun add @lst97-oss/last-httprism
+# npm install @lst97-oss/last-httprism / pnpm add @lst97-oss/last-httprism
 ```
 
 ESM package, Node 20.19+ (`require()` of the ESM build also works there).
@@ -21,7 +21,7 @@ import {
 	MediaType,
 	MessageCode,
 	statusByCode,
-} from "last-httprism";
+} from "@lst97-oss/last-httprism";
 
 HttpStatus.FORBIDDEN;
 // { code: 403, name: "FORBIDDEN", phrase: "Forbidden",
@@ -55,7 +55,11 @@ throw new HttpError(
 Helpers:
 
 ```ts
-import { isClientError, isSuccess, statusClassOf } from "last-httprism";
+import {
+	isClientError,
+	isSuccess,
+	statusClassOf,
+} from "@lst97-oss/last-httprism";
 
 statusClassOf(404); // "4xx"
 isSuccess(204); // true
@@ -65,7 +69,12 @@ isClientError(HttpStatus.FORBIDDEN); // true
 Other registries:
 
 ```ts
-import { HttpHeader, HttpMethod, MediaType, methodInfo } from "last-httprism";
+import {
+	HttpHeader,
+	HttpMethod,
+	MediaType,
+	methodInfo,
+} from "@lst97-oss/last-httprism";
 
 HttpHeader.CONTENT_TYPE; // "Content-Type"
 methodInfo("post")?.idempotent; // false
@@ -81,7 +90,7 @@ import {
 	MessageCode,
 	messageCodeInfo,
 	registerMessageCodes,
-} from "last-httprism";
+} from "@lst97-oss/last-httprism";
 
 registerMessageCodes({
 	QUOTA_EXCEEDED: {
@@ -101,11 +110,11 @@ messageCodeInfo("QUOTA_EXCEEDED"); // same record
 Vendor codes live in their own modules and are never merged into `HttpStatus`. Each record carries a `provider` field.
 
 ```ts
-import { AwsStatus } from "last-httprism/aws";
-import { CloudflareStatus } from "last-httprism/cloudflare";
-import { IisStatus } from "last-httprism/iis";
-import { NginxStatus } from "last-httprism/nginx";
-import { UnofficialStatus } from "last-httprism/unofficial";
+import { AwsStatus } from "@lst97-oss/last-httprism/aws";
+import { CloudflareStatus } from "@lst97-oss/last-httprism/cloudflare";
+import { IisStatus } from "@lst97-oss/last-httprism/iis";
+import { NginxStatus } from "@lst97-oss/last-httprism/nginx";
+import { UnofficialStatus } from "@lst97-oss/last-httprism/unofficial";
 
 CloudflareStatus.CONNECTION_TIMED_OUT;
 // { code: 522, name: "CONNECTION_TIMED_OUT", phrase: "Connection Timed Out",
@@ -119,13 +128,13 @@ UnofficialStatus.PAGE_EXPIRED.code; // 419
 
 Available subpaths:
 
-| Subpath                    | Provider     | Codes                                        |
-| -------------------------- | ------------ | -------------------------------------------- |
-| `last-httprism/cloudflare` | `cloudflare` | 520–526, 530, historical 527                 |
-| `last-httprism/nginx`      | `nginx`      | 444, 494–497, 499                            |
-| `last-httprism/aws`        | `aws`        | ALB: 460, 463, 464, 561, 562                 |
-| `last-httprism/iis`        | `iis`        | 440, 449, 451 (Exchange ActiveSync redirect) |
-| `last-httprism/unofficial` | `unofficial` | 218, 419, 420, 509, 599 — unassigned by IANA |
+| Subpath                               | Provider     | Codes                                        |
+| ------------------------------------- | ------------ | -------------------------------------------- |
+| `@lst97-oss/last-httprism/cloudflare` | `cloudflare` | 520–526, 530, historical 527                 |
+| `@lst97-oss/last-httprism/nginx`      | `nginx`      | 444, 494–497, 499                            |
+| `@lst97-oss/last-httprism/aws`        | `aws`        | ALB: 460, 463, 464, 561, 562                 |
+| `@lst97-oss/last-httprism/iis`        | `iis`        | 440, 449, 451 (Exchange ActiveSync redirect) |
+| `@lst97-oss/last-httprism/unofficial` | `unofficial` | 218, 419, 420, 509, 599 — unassigned by IANA |
 
 ### Adding a vendor
 
@@ -141,7 +150,7 @@ src/
   http/methods.ts       # 38 registered methods with safe/idempotent/cacheable
   http/media-types.ts   # curated common media types
   http/message-codes.ts # builtin message codes + host registry
-  vendor/cloudflare.ts  # extension data, exported only via last-httprism/cloudflare
+  vendor/cloudflare.ts  # extension data, exported only via @lst97-oss/last-httprism/cloudflare
   vendor/nginx.ts       # ... and one module per vendor subpath
   vendor/aws.ts
   vendor/iis.ts

@@ -64,7 +64,7 @@ describe("MessageCode", () => {
 				QUOTA_EXCEEDED: { status: 400, message: "duplicate" },
 			}),
 		).toThrow(
-			'last-httprism: message code "QUOTA_EXCEEDED" is already registered',
+			'@lst97-oss/last-httprism: message code "QUOTA_EXCEEDED" is already registered',
 		);
 		expect(() =>
 			registerMessageCodes({

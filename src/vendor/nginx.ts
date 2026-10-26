@@ -52,7 +52,7 @@ const statuses = defineProviderStatuses(NGINX, entries);
 /**
  * nginx-internal status codes: 444, 494–497, and 499.
  *
- * Exported only from `last-httprism/nginx`; these codes never resolve from the
+ * Exported only from `@lst97-oss/last-httprism/nginx`; these codes never resolve from the
  * standard lookup.
  *
  * @see https://github.com/nginx/nginx/blob/master/src/http/ngx_http_request.h
